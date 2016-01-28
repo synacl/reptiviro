@@ -16,18 +16,22 @@ LCD4Bit_mod lcd = LCD4Bit_mod(2); // 2 line display
 #define BLUEPIN 42  // 5050 LED Strip
 #define GREENPIN 44 // 5050 LED Strip
 
+/* Day Start and End Hour (24hr format) */
+int day_start = 8;
+int day_end = 19; 
+/* Surface temps wanted (Celcius) */
+float target_NightC = 30;
+float target_DayC = 31;
+
 // Sensor poll and Display update interval
 const long INTERVAL = 5000; //  in mills (1000 = 1sec)
 unsigned long previousMillis = 0;
-
-/* Surface Temps wanted (Celcius) */
-float target_NightC = 30;
-float target_DayC = 31;
 
 float target_tempC; 
 float target_tempF;
 float c;
 float f;
+char mode[6];
 
 void setup() {
   /* IO setup */
@@ -48,14 +52,15 @@ void setup() {
 }
 
 void loop() {
-  // update target
- 
-  if (hour() >= 8 && hour() < 19){
+  // Check Day/Time
+  if (hour() >= day_start && hour() < day_end){
+    sprintf(mode,"Day");
     target_tempC = target_DayC; // Celcuis
     Daylight();
   }
   else {
     // Night Cycle
+    sprintf(mode,"Night");
     target_tempC = target_NightC; // Celcius
     Nightlight();
   }
@@ -104,20 +109,21 @@ void updateDisplay(){
   target_tempF = (target_tempC * (9.0 / 5.0)) + 32;
   char ttempstr[6];
   char topmsg[17]; //top lcd line buffer
-  dtostrf(target_tempF,4,1,ttempstr);
-  //sprintf(topmsg,"Target: %sF%-8s",ttempstr," ");
-  sprintf(topmsg,"%02d:%02d Set:%sF%-3s",hour(),minute(),ttempstr," ");
+  dtostrf(target_tempF,3,0,ttempstr);
+  sprintf(topmsg,"%02d:%02d %s:%sF",hour(),minute(),mode,ttempstr);
   //Serial.print(topmsg);
   lcd.cursorTo(1,0);
   lcd.printIn(topmsg);
-  //float dhtf = ( DHT.temperature * (9.0 / 5.01)) + 32;
+  float dhtf = ( DHT.temperature * (9.0 / 5.0)) + 32;
   lcd.cursorTo(2, 0);  //line=2, x=0
   char bmsg[17];
-  char fstr[6];
-  char hstr[6];
-  dtostrf(f,4,1, fstr);
-  dtostrf(DHT.humidity,4,0,hstr);
-  sprintf(bmsg,"%sF %s%%RH%-16s",fstr,hstr," ");
+  char fstr[5]; //tmp36
+  char dhtH[4]; //dht22 Humidity
+  char dhtF[5]; //dht22 Temp F
+  dtostrf(f,3,0, fstr);
+  dtostrf(DHT.humidity,2,0,dhtH);
+  dtostrf(dhtf,3,0,dhtF);
+  sprintf(bmsg,"U%sF A%sF %s%%H",fstr,dhtF,dhtH);
   lcd.printIn(bmsg);
 }  
   
@@ -128,8 +134,8 @@ void Daylight(){
 }
 
 void Nightlight(){
-  analogWrite(REDPIN, 128); //130
-  analogWrite(BLUEPIN, 128); //175
+  analogWrite(REDPIN, 128);
+  analogWrite(BLUEPIN, 128);
 }
 
   
