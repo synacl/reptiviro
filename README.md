@@ -1,11 +1,11 @@
 ## ReptiViro
 
-An Arduino based Reptile Environment controller. Seperate day and night control of temperature using a Solid State Realy to control an Under Tank Heater (UTH). Day (Yellow Glow) & Night (Purple) lighting using a 5050 RGB LED strip. LCD display of (A)mbient temperature relative (H)umidity, target surface temperature and actual (U) surface temp.   
+An Arduino based Reptile Environment controller. Separate day and night control of temperature using a Solid State Relay to control an Under Tank Heater (UTH). Day (Yellow Glow) & Night (Purple) lighting using a 5050 RGB LED strip. LCD display of (A)mbient temperature and relative (H)umidity, the target surface temperature and actual surface temp (U).   
 
 
 ## Motivation
 
-I was looking for a better way to maintain the environment for my Leopard Gecko. Reptiles need specific surface temperatures, humidity and light, which differs during day and night.  
+I was looking for a better way to maintain the environment for my Leopard Gecko. Reptiles need specific surface temperatures, humidity and light, which differs during day and night. 
 
 ## Installation
 
